@@ -1,10 +1,7 @@
 import * as functions from 'firebase-functions'
 import * as admin  from 'firebase-admin'
-import app from './api'
 
 admin.initializeApp()
-
-exports.v1 = functions.https.onRequest(app)
 
 exports.createInvoice = functions.https.onCall(async (docket: Docket, ctx) => {
 

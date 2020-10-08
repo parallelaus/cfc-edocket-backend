@@ -4,13 +4,14 @@ type Aircraft = {
 }
 
 type Fee = {
-    group: string
+    id?: string
+    group?: string
     label: string
     price: number
 }
 
 type Docket = {
-    docket: number
+    number: number
     date: string
     aircraft: string
     vdo: {
@@ -22,7 +23,7 @@ type Docket = {
             feeId: string
             qty: number
         }
-    ]
+    ],
 }
 
 type InvoiceItem = {
@@ -33,8 +34,23 @@ type InvoiceItem = {
 }
 
 type Invoice = {
-    user: string
-    docket: number
+    date: string
     items: InvoiceItem[]
     total: number
+}
+
+type Payment = {
+    stripePaymentIntent: {
+        id: string
+        clientSecret: string
+    }
+}
+
+type Flight = {
+    number: number
+    user: string
+    date: string
+    docket: Docket
+    invoice: Invoice
+    payment?: Payment
 }

@@ -44,6 +44,7 @@ type Payment = {
         id: string
         clientSecret: string
     }
+    status: string
 }
 
 type Flight = {

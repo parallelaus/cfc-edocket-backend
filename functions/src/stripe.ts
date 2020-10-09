@@ -3,9 +3,10 @@ import * as admin  from 'firebase-admin'
 import Stripe from 'stripe';
 
 const stripe = require('stripe')(functions.config().stripe.secret, {
-    apiVersion: '2020-03-02',
+    apiVersion: '2020-08-27',
   });
-  
+// const stripe = require('stripe')(functions.config().stripe.secret)  
+
 /**
  * Creates a Stripe Customer and setupIntent from Firebase User
  * 
@@ -76,3 +77,19 @@ export const updatePaymentIntent = async (flight: Flight): Promise<Stripe.Paymen
     }
     throw new Error('PaymentIntent data not provided with flight record')
 }
+
+export const fetchPaymentMethods = async (uid: string): Promise<Stripe.PaymentMethod[]> => {
+    // Get the customer id from the database
+    const customer = (await admin.firestore().collection('stripe_customers').doc(uid).get()).data()
+
+    if(customer) {
+        const cardList = await stripe.paymentMethods.list({
+            customer: customer.customer_id,
+            type: 'card'
+        })
+        return cardList.data
+    }
+
+    throw new Error('User not registered as a Stripe Customer')
+}
+

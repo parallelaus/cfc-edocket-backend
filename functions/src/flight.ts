@@ -8,11 +8,11 @@ import { createPaymentIntent, updatePaymentIntent } from './stripe'
  */
 async function generateInvoiceNumber(): Promise<number> {
     const increment = admin.firestore.FieldValue.increment(1)
-    const invoiceCounter = admin.firestore().collection('counters').doc('invoice')
-    await invoiceCounter.update({ number: increment })
+    const invoiceCounter = admin.firestore().collection('settings').doc('invoices')
+    await invoiceCounter.update({ counter: increment })
     const counter = (await invoiceCounter.get()).data()
     if(counter) {
-        return counter.number
+        return counter.counter
     } else {
         throw new Error('Cuuld not get invoice number')
     }
@@ -83,7 +83,8 @@ export const createFlight = async(docket: Docket, ctx: functions.https.CallableC
             stripePaymentIntent: {
                 id: paymentIntent.id,
                 clientSecret: paymentIntent.client_secret
-            }
+            },
+            status: paymentIntent.status
         }
     }       
 

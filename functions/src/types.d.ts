@@ -2,8 +2,8 @@ type Aircraft = {
   label: string
   description?: string
   rate: number
-  images: string[]
-  state?: AircraftReturnState
+  images: string[],
+  lastFlight?: Flight
 }
 
 type Fee = {
@@ -20,7 +20,15 @@ type Docket = {
   vdo: {
     out: number
     in: number
+  },
+  taco: {
+    out?: number,
+    in: number
   }
+  fuel: {
+    out?: number,
+    in: number
+  },
   landings: [
     {
       feeId: string
@@ -52,18 +60,6 @@ type Payment = {
   stripePaymentMethodId?: string
 }
 
-type AircraftReturnState = {
-  lastFlight?: string
-  hours?: number
-  fuel?: {
-    out?: number
-    in: number
-  }
-  oil?: number
-  taco?: number
-  vdo?: number
-}
-
 type StatItem = {
   [key: string]: boolean | number
 }
@@ -76,5 +72,4 @@ type Flight = {
   payment?: Payment
   stats?: StatItem[]
   notes?: string
-  aircraftReturnState?: AircraftReturnState
 }

@@ -23,18 +23,15 @@ export const fetchAircraft = async(ctx: functions.https.CallableContext): Promis
     const aircraftDocs = (await admin.firestore().collection('aircraft').get()).docs
 
     const aircraft: Aircraft[] = []
+
+    // Add the last flight for each aircraft
     for(const document of aircraftDocs) {
         const currentAircraft = document.data() as Aircraft
 
         const statusDocs = (await admin.firestore().collection('flights').where("docket.aircraft", "==", currentAircraft.label).get()).docs
         if(statusDocs.length > 0) {
             const lastFlight = statusDocs.sort(flightDateCompare)[0].data() as Flight
-            let state: AircraftReturnState = {}
-            if(lastFlight.aircraftReturnState) {
-                state = lastFlight.aircraftReturnState
-            }
-            state.lastFlight = lastFlight.docket.date
-            currentAircraft.state = state
+            currentAircraft.lastFlight = lastFlight
         }
         aircraft.push(currentAircraft)
       }

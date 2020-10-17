@@ -89,7 +89,7 @@ export const createFlight = async(docket: Docket, ctx: functions.https.CallableC
         number: await generateInvoiceNumber(),
         user: ctx.auth?.uid as string,
         docket,
-        invoice: await docketToInvoice(docket)
+        invoice: await docketToInvoice(docket),
     }
 
     // Create Stripe Payment Intent and update flight

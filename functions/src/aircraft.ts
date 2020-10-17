@@ -22,7 +22,7 @@ export const fetchAircraft = async(ctx: functions.https.CallableContext): Promis
     // Get aircraft from firestore
     const aircraftDocs = (await admin.firestore().collection('aircraft').get()).docs
 
-    let aircraft: Aircraft[] = []
+    const aircraft: Aircraft[] = []
     for(const document of aircraftDocs) {
         const currentAircraft = document.data() as Aircraft
 

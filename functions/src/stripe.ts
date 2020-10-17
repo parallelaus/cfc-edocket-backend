@@ -93,3 +93,12 @@ export const fetchPaymentMethods = async (uid: string): Promise<Stripe.PaymentMe
     throw new Error('User not registered as a Stripe Customer')
 }
 
+/**
+ * Detaches the payment method from the customer
+ * 
+ */
+export const detachPaymentMethod = async (paymentMethodId: string): Promise<Boolean> => {
+    await stripe.paymentMethods.detach(paymentMethodId)
+    return true
+}
+

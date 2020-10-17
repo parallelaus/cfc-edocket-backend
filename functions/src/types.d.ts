@@ -1,57 +1,80 @@
 type Aircraft = {
-    label: string
-    rate: number
+  label: string
+  description?: string
+  rate: number
+  images: string[]
+  state?: AircraftReturnState
 }
 
 type Fee = {
-    id?: string
-    group?: string
-    label: string
-    price: number
+  id?: string
+  group?: string
+  label: string
+  price: number
 }
 
 type Docket = {
-    number: number
-    date: string
-    aircraft: string
-    vdo: {
-        out: number
-        in: number
+  number: number
+  date: string
+  aircraft: string
+  vdo: {
+    out: number
+    in: number
+  }
+  landings: [
+    {
+      feeId: string
+      qty: number
     }
-    landings: [
-        {
-            feeId: string
-            qty: number
-        }
-    ],
+  ]
 }
 
 type InvoiceItem = {
-    description: string
-    qty: number
-    rate: number
-    total: number
+  description: string
+  qty: number
+  rate: number
+  total: number
 }
 
 type Invoice = {
-    date: string
-    items: InvoiceItem[]
-    total: number
+  date: string
+  items: InvoiceItem[]
+  total: number
 }
 
 type Payment = {
-    stripePaymentIntent: {
-        id: string
-        clientSecret: string
-    }
-    status: string
+  stripePaymentIntent: {
+    id: string
+    clientSecret: string
+  }
+  status: string
+  date?: string
+  stripePaymentMethodId?: string
+}
+
+type AircraftReturnState = {
+  lastFlight?: string
+  hours?: number
+  fuel?: {
+    out?: number
+    in: number
+  }
+  oil?: number
+  taco?: number
+  vdo?: number
+}
+
+type StatItem = {
+  [key: string]: boolean | number
 }
 
 type Flight = {
-    number: number
-    user: string
-    date: string
-    docket: Docket
-    invoice: Invoice
-    payment?: Payment
+  number: number
+  user: string
+  docket: Docket
+  invoice: Invoice
+  payment?: Payment
+  stats?: StatItem[]
+  notes?: string
+  aircraftReturnState?: AircraftReturnState
 }

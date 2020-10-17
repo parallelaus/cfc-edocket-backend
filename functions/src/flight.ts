@@ -64,14 +64,30 @@ async function docketToInvoice(docket: Docket) : Promise<Invoice> {
 }
 
 /**
+ * Check for existance of given docket number
+ * Docket numbers must be unique
+ */
+export const docketExists = async (number: number, ctx: functions.https.CallableContext): Promise<Boolean> => {
+    const flights = (await admin.firestore().collection('flights').where('docket.number', "==", number).get()).docs
+    if(flights.length > 0) {
+        return true
+    }
+    return false
+}
+
+/**
  * Creates a flight record from a docket
  */
 export const createFlight = async(docket: Docket, ctx: functions.https.CallableContext): Promise<Flight> => {
+    // Chech that the docket number does not exist
+    if(await docketExists(docket.number, ctx)) {
+        throw new Error('Duplicate docket number')
+    }
+
     // Create the initial flight record
     const flight: Flight = {
         number: await generateInvoiceNumber(),
         user: ctx.auth?.uid as string,
-        date: docket.date,
         docket,
         invoice: await docketToInvoice(docket)
     }
@@ -95,10 +111,15 @@ export const createFlight = async(docket: Docket, ctx: functions.https.CallableC
 }
 
 /**
- * Updates an existing flight record
+ * Recalculated the flight costs based on the updated flight docket.
+ * Stripe payment intent is also updated
+ * Results are stored in firestore
+ * This does not update any other fight fields
+ * 
+ * NOTE: Do not use this method to update any other field on the flight, access firestore directly
  * 
  */
-export const updateFlight = async(flight: Flight, ctx: functions.https.CallableContext): Promise<Flight> => {
+export const updateFlightDocket = async(flight: Flight, ctx: functions.https.CallableContext): Promise<Flight> => {
     // Regenerate the invoice items and total
     flight.invoice = await docketToInvoice(flight.docket)
 

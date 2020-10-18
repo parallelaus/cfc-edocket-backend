@@ -6,3 +6,4 @@ Google Firebase Backend Function for Curtin Flying Club eDocket System
 ##
 1. Clone this repo
 2. npm install
+2. npm run serve
